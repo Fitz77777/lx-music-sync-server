@@ -14,12 +14,8 @@ module.exports = {
     //   maxSnapshotNum: 10, // 可选，最大备份快照数
     //   'list.addMusicLocationType': 'top', // 可选，添加歌曲到我的列表时的位置 top | bottom，参考客户端的「设置 → 列表设置 → 添加歌曲到列表时的位置」
     // },
-    // },
-    {
-      name: 'test',
-      password: 'test123',
-    },
   ],
+
 
   // 所有名称以 `env.` 开头的配置将解析成环境变量
   // 'env.PORT': '9527',
