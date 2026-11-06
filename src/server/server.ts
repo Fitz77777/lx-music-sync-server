@@ -162,10 +162,12 @@ const handleStartServer = async(port = 9527, ip = '127.0.0.1') => await new Prom
     socket.moduleReadys = {
       list: false,
       dislike: false,
+      userApi: false,
     }
     socket.feature = {
       list: false,
       dislike: false,
+      userApi: false,
     }
     socket.on('pong', () => {
       socket.isAlive = true
@@ -206,6 +208,7 @@ const handleStartServer = async(port = 9527, ip = '127.0.0.1') => await new Prom
     socket.remote = msg2call.remote
     socket.remoteQueueList = msg2call.createQueueRemote('list')
     socket.remoteQueueDislike = msg2call.createQueueRemote('dislike')
+    socket.remoteQueueUserApi = msg2call.createQueueRemote('userApi')
     socket.addEventListener('message', ({ data }) => {
       if (typeof data != 'string') return
       void decryptMsg(socket.keyInfo, data).then((data) => {

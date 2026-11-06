@@ -1,0 +1,50 @@
+export const sortScripts = (scripts: Record<string, string>) => {
+  const newScripts: Record<string, string> = {}
+  for (const id of Object.keys(scripts).sort()) newScripts[id] = scripts[id]
+  return newScripts
+}
+
+/**
+ * 序列化用户自定义源数据，scripts 按 id 排序以保证相同内容序列化结果一致
+ */
+export const serializeUserApiData = (data: LX.UserApi.UserApiData) => {
+  return JSON.stringify({
+    apis: data.apis,
+    scripts: sortScripts(data.scripts),
+  })
+}
+
+/**
+ * 反序列化用户自定义源数据，解析失败返回 null
+ */
+export const parseUserApiData = (data: string) => {
+  try {
+    const parsed = JSON.parse(data) as LX.UserApi.UserApiData
+    if (!Array.isArray(parsed.apis) || typeof parsed.scripts != 'object' || parsed.scripts == null) return null
+    return {
+      apis: parsed.apis,
+      scripts: { ...parsed.scripts },
+    }
+  } catch (err) {
+    console.warn('parse user api data failed:', err)
+    return null
+  }
+}
+
+/**
+ * 校验自定义源数据完整性：剔除没有脚本内容的源信息，以及没有对应源信息的脚本
+ */
+export const checkUserApiData = (data: LX.UserApi.UserApiData) => {
+  const apis: LX.UserApi.UserApiInfo[] = []
+  const scripts: Record<string, string> = {}
+  const ids = new Set<string>()
+  for (const api of data.apis) {
+    if (typeof api.id != 'string' || !api.id) continue
+    if (typeof data.scripts[api.id] != 'string' || data.scripts[api.id] == '') continue
+    if (ids.has(api.id)) continue
+    ids.add(api.id)
+    apis.push(api)
+    scripts[api.id] = data.scripts[api.id]
+  }
+  return { apis, scripts }
+}
