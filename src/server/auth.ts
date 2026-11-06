@@ -13,7 +13,7 @@ import { toMD5 } from '@/utils'
 
 const getAvailableIP = (req: http.IncomingMessage) => {
   let ip = getIP(req)
-  return ip && (store.get<number>(ip) ?? 0) < 10 ? ip : null
+  return ip && (store.get<number>(ip) ?? 0) < 1000 ? ip : null
 }
 
 const verifyByKey = (encryptMsg: string, userId: string) => {
