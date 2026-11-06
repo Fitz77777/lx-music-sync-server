@@ -170,19 +170,25 @@ const handleMergeData = async(socket: LX.Socket): Promise<[LX.UserApi.UserApiDat
   let requiredUpdateRemoteData = true
   switch (mode) {
     case 'merge_local_remote':
-      data = mergeData(localData, remoteData)
+      // 合并流程不携带激活源选择（保持设备各自选择）
+      data = { ...mergeData(localData, remoteData), apiSource: null }
       break
     case 'merge_remote_local':
-      data = mergeData(remoteData, localData)
+      data = { ...mergeData(remoteData, localData), apiSource: null }
       break
     case 'overwrite_local_remote':
     case 'overwrite_remote_local':
     // 普通覆盖模式对自定义源语义退化为合并（源以独立脚本为单位，无“列表内子结构”）
-      data = mergeData(localData, remoteData)
+      data = { ...mergeData(localData, remoteData), apiSource: null }
       break
     case 'overwrite_local_remote_full':
+      // 完全覆盖保留数据中携带的激活源选择
       data = localData
       requiredUpdateLocalData = false
+      break
+    case 'overwrite_remote_local_full':
+      data = remoteData
+      requiredUpdateRemoteData = false
       break
     case 'overwrite_remote_local_full':
       data = remoteData
@@ -231,7 +237,7 @@ const handleSyncDataFromSnapshot = async(socket: LX.Socket, snapshot: LX.UserApi
   if (await checkDataLatest(socket)) return
 
   const [remoteData, localData] = await Promise.all([getRemoteData(socket), getLocalData(socket)])
-  const newData = mergeDataFromSnapshot(localData, remoteData, snapshot)
+  const newData = { ...mergeDataFromSnapshot(localData, remoteData, snapshot), apiSource: null }
 
   const key = await setLocalData(socket, newData)
   const err = await setRemoteData(socket, newData, key).catch(err => err)
