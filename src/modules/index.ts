@@ -24,5 +24,5 @@ export { UserApiManage, UserApiEvent, type UserApiEventType } from './userapi'
 export const featureVersion = {
   list: 1,
   dislike: 1,
-  userApi: 1,
+  userApi: 2,
 } as const

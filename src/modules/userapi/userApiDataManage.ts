@@ -24,8 +24,8 @@ export class UserApiDataManage {
 
   overwirteUserApiInfo = async(data: LX.UserApi.UserApiData) => {
     this.userApiData = checkUserApiData(data)
-    // 仅在完全覆盖类流程（携带真实选择）时更新；合并流程携带 null，保持现有选择
-    if (data.apiSource != null) this.apiSource = data.apiSource
+    // 字段存在时更新（null 表示未激活任何自定义源）；未携带该字段（合并流程）则保持现有选择
+    if (data.apiSource !== undefined) this.apiSource = data.apiSource
     return this.getUserApiData()
   }
 }
