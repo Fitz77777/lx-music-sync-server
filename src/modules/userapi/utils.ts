@@ -32,7 +32,8 @@ export const parseUserApiData = (data: string) => {
 }
 
 /**
- * 校验自定义源数据完整性：剔除没有脚本内容的源信息，以及没有对应源信息的脚本
+ * 校验自定义源数据完整性：剔除无效 id、重复 id；
+ * 脚本内容为空不剔除音源信息本身，只不把空脚本写进 scripts
  */
 export const checkUserApiData = (data: LX.UserApi.UserApiData) => {
   const apis: LX.UserApi.UserApiInfo[] = []
@@ -40,11 +41,11 @@ export const checkUserApiData = (data: LX.UserApi.UserApiData) => {
   const ids = new Set<string>()
   for (const api of data.apis) {
     if (typeof api.id != 'string' || !api.id) continue
-    if (typeof data.scripts[api.id] != 'string' || data.scripts[api.id] == '') continue
     if (ids.has(api.id)) continue
     ids.add(api.id)
     apis.push(api)
-    scripts[api.id] = data.scripts[api.id]
+    const script = data.scripts[api.id]
+    if (typeof script == 'string' && script != '') scripts[api.id] = script
   }
   return { apis, scripts }
 }
