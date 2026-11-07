@@ -1,13 +1,19 @@
 {
   "name": "lx-music-sync-server",
-  "version": "2.1.2",
+  "version": "2.1.2-fork.1",
   "private": true,
+  "fork": {
+    "owner": "Fitz77777",
+    "repo": "lx-music-sync-server"
+  },
   "scripts": {
     "build": "rimraf server && tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
     "start": "node ./index.js",
     "dev": "nodemon",
     "prd": "pm2 start ecosystem.config.js --env production",
-    "publish": "node publish"
+    "publish": "node publish",
+    "version:bump": "node scripts/fork-version.js bump",
+    "version:sync": "node scripts/fork-version.js sync"
   },
   "engines": {
     "node": ">= 16",
