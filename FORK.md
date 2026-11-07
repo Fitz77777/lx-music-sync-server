@@ -49,6 +49,18 @@ npm run version:sync -- 2.2.0
 
 > 不要直接向 `master` 推送 fork 改动；`master` 只作为上游镜像。
 
+## CI 配置
+
+- `release.yml` 需要 `contents: write` 权限（已在工作流内声明），不需要额外 secrets。
+- `docker-publish.yml` 需要以下仓库 secrets：
+
+| Secret | 说明 |
+| --- | --- |
+| `DOCKER_HUB_USER` | Docker Hub 用户名 |
+| `DOCKER_HUB_TOKEN` | Docker Hub Access Token（需要写权限） |
+
+镜像名使用 `${{ github.repository }}`，即 `fitz77777/lx-music-sync-server`。Docker Hub 账号必须能推送该命名空间；如果 Docker Hub 用户名不同，把 `IMAGE_NAME` 改成 `${{ secrets.DOCKER_HUB_USER }}/lx-music-sync-server`。
+
 ## 与上游的差异
 
 - `package.json` 增加了 `fork.owner` / `fork.repo`。
